@@ -15,12 +15,12 @@
  #include "strutils.h"
  
 +#ifndef HAVE_SCANF_MS_MODIFIER
-+# define UL_SCNsA "%s"
++#define UL_SCNsA "%s"
 +#endif
 +
- static inline char *skip_spaces(char *s)
+ static int next_number(char **s, int *num)
  {
- 	assert(s);
+ 	char *end = NULL;
 @@ -61,16 +65,31 @@ static int mnt_parse_table_line(struct l
  	int rc, n = 0, xrc;
  	char *src = NULL, *fstype = NULL, *optstr = NULL;
@@ -67,8 +67,8 @@
 +	src = malloc(len);
 +#endif
 +
- 	rc = sscanf(s,	"%u "		/* (1) id */
- 			"%u "		/* (2) parent */
+ 	rc = sscanf(s,	"%d "		/* (1) id */
+ 			"%d "		/* (2) parent */
  			"%u:%u "	/* (3) maj:min */
 @@ -147,9 +176,15 @@ static int mnt_parse_mountinfo_line(stru
  			&fs->id,
@@ -102,3 +102,16 @@
  
  	if (rc >= 10) {
  		fs->flags |= MNT_FS_KERNEL;
+--- a/lib/colors.c
++++ b/lib/colors.c
+@@ -16,6 +16,10 @@
+ #include "pathnames.h"
+ #include "strutils.h"
+ 
++#ifndef HAVE_SCANF_MS_MODIFIER
++#define UL_SCNsA "%s"
++#endif
++
+ /*
+  * terminal-colors.d file types
+  */
